@@ -3,7 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 
 interface Frontmatter {
-  category: any;
+  category: string; // 🔥 Fixed: was `any`
   title: string;
   date: string;
   description: string;
@@ -23,10 +23,12 @@ export function getPosts(): Post[] {
     const slug = filename.replace(/\.md$/, '');
     const filePath = path.join(postsDirectory, filename);
     const fileContent = fs.readFileSync(filePath, 'utf-8');
+
     const { data: frontmatter } = matter(fileContent);
+
     return {
       slug,
-      frontmatter: frontmatter as Frontmatter,
+      frontmatter: frontmatter as Frontmatter, // Assumes the markdown has all required fields
     };
   });
 }
