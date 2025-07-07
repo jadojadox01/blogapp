@@ -58,7 +58,6 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
   return headings;
 }
 
-// ✅ DO NOT use PageProps or other custom generic types
 export default async function BlogPost({
   params,
 }: {
@@ -77,12 +76,7 @@ export default async function BlogPost({
     content: string;
   };
 
-  const requiredFields: (keyof Frontmatter)[] = [
-    'title',
-    'date',
-    'coverImage',
-    'description',
-  ];
+  const requiredFields: (keyof Frontmatter)[] = ['title', 'date', 'coverImage', 'description'];
   for (const field of requiredFields) {
     if (!frontmatter[field]) {
       throw new Error(`Missing frontmatter field: ${field}`);
@@ -113,9 +107,7 @@ export default async function BlogPost({
 
       <article className="prose prose-lg max-w-none flex-grow dark:prose-invert">
         <h1 className="mb-2">{frontmatter.title}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-          {frontmatter.date}
-        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{frontmatter.date}</p>
         <Image
           src={frontmatter.coverImage}
           alt={frontmatter.title}
