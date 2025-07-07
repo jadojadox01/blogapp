@@ -1,19 +1,23 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getPosts } from '@/lib/getPosts';
+import type PageProps  from 'next/types'; // Import PageProps for typedRoutes compatibility
 
 interface Params {
   category: string;
 }
 
-export default async function CategoryPostsPage({ params }: { params: Params }) {
+export default async function CategoryPostsPage({
+  params,
+}: PageProps<Params>) {
   const { category } = params;
 
   const posts = await getPosts();
 
   // Filter posts by category (case insensitive)
   const filteredPosts = posts.filter(
-    (post) => post.frontmatter.category?.toLowerCase() === category.toLowerCase()
+    (post) =>
+      post.frontmatter.category?.toLowerCase() === category.toLowerCase()
   );
 
   if (filteredPosts.length === 0) {
