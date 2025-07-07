@@ -1,3 +1,5 @@
+// This is a SERVER COMPONENT. DO NOT add "use client"
+
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -7,20 +9,15 @@ import remarkRehype from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
 import rehypeStringify from 'rehype-stringify';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
+import { visit } from 'unist-util-visit';
 
-import PostSidebar from '@/components/PostSidebar'; // Client Component
+import PostSidebar from '@/components/PostSidebar';
 
 interface Params {
   slug: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface Frontmatter {
-  title: string;
-  date: string;
-  description: string;
-  coverImage: string;
-}
 
 interface Heading {
   id: string;
@@ -35,8 +32,6 @@ function slugify(text: string) {
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-');
 }
-
-import { visit } from 'unist-util-visit';
 
 async function extractHeadings(markdown: string): Promise<Heading[]> {
   const headings: Heading[] = [];
@@ -71,16 +66,14 @@ export default async function BlogPost({ params }: { params: Params }) {
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   const { data: frontmatter, content } = matter(fileContent);
 
-  if (
-    !frontmatter.title ||
-    !frontmatter.date ||
-    !frontmatter.coverImage ||
-    !frontmatter.description
-  ) {
-    throw new Error('Missing required frontmatter fields.');
+  // Frontmatter validation
+  const requiredFields = ['title', 'date', 'coverImage', 'description'];
+  for (const field of requiredFields) {
+    if (!frontmatter[field]) {
+      throw new Error(`Missing frontmatter field: ${field}`);
+    }
   }
 
-  // Extract headings here before JSX!
   const headings = await extractHeadings(content);
 
   const processedContent = await remark()
@@ -91,25 +84,29 @@ export default async function BlogPost({ params }: { params: Params }) {
     .process(content);
 
   const contentHtml = processedContent.toString();
-
   const shareUrl = `https://yourdomain.com/blog/${slug}`;
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
-      <div className="hidden lg:block">
+      <aside className="hidden lg:block">
         <PostSidebar headings={headings} shareUrl={shareUrl} title={frontmatter.title} />
-      </div>
+      </aside>
 
       <article className="prose prose-lg max-w-none flex-grow dark:prose-invert">
         <h1 className="mb-2">{frontmatter.title}</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{frontmatter.date}</p>
-        <img
+        <Image
           src={frontmatter.coverImage}
           alt={frontmatter.title}
+          width={1200}
+          height={600}
           className="rounded-xl mb-8 w-full max-h-96 object-cover"
         />
 
-        <section dangerouslySetInnerHTML={{ __html: contentHtml }} className="max-w-none" />
+        <section
+          dangerouslySetInnerHTML={{ __html: contentHtml }}
+          className="max-w-none"
+        />
       </article>
     </main>
   );

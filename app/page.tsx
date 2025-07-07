@@ -34,7 +34,7 @@ export default function HomePage() {
           className="p-6 border rounded-lg hover:shadow-lg transition bg-white dark:bg-gray-900 dark:border-gray-700"
         >
           <h2 className="text-xl font-semibold mb-2">About Me</h2>
-          <p className="text-gray-600 dark:text-gray-400">Learn about Jean's journey.</p>
+          <p className="text-gray-600 dark:text-gray-400">Learn about Jean&apos;s journey.</p>
         </Link>
         <Link
           href="/blog/categories"
