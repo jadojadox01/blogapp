@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Post {
   slug: string;
@@ -89,7 +90,7 @@ export default function SearchBox({ posts }: Props) {
               }}
               className="flex items-center gap-3 px-4 py-3 hover:bg-emerald-100 dark:hover:bg-emerald-900 transition rounded-lg"
             >
-              <img
+              <Image
                 src={post.frontmatter.coverImage}
                 alt={post.frontmatter.title}
                 width={50}
