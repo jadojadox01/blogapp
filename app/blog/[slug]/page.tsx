@@ -11,6 +11,7 @@ import rehypeStringify from 'rehype-stringify';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { visit } from 'unist-util-visit';
+import type { Heading as MdastHeading, Literal,} from 'mdast';
 
 import PostSidebar from '@/components/PostSidebar';
 
@@ -39,16 +40,18 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
   await remark()
     .use(remarkParse)
     .use(() => (tree) => {
-      visit(tree, 'heading', (node: any) => {
-        if (node.depth >= 2 && node.depth <= 4) {
-          const text = node.children
-            .filter((child: any) => child.type === 'text' || child.type === 'inlineCode')
-            .map((child: any) => child.value)
-            .join('');
-          const id = slugify(text);
-          headings.push({ id, text, level: node.depth });
-        }
-      });
+    
+        visit(tree, 'heading', (node: MdastHeading) => {
+            if (node.depth >= 2 && node.depth <= 4) {
+              const text = (node.children as Literal[])
+                .filter((child) => child.type === 'text' || child.type === 'inlineCode')
+                .map((child) => child.value)
+                .join('');
+              const id = slugify(text);
+              headings.push({ id, text, level: node.depth });
+            }
+          });
+          
     })
     .process(markdown);
 
