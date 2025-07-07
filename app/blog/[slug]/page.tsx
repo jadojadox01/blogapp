@@ -13,7 +13,6 @@ import type { Heading as MdastHeading, Literal } from 'mdast';
 
 import PostSidebar from '@/components/PostSidebar';
 
-// ✅ This is how you type Next.js dynamic route params
 type Props = {
   params: {
     slug: string;
@@ -99,11 +98,7 @@ export default async function BlogPost({ params }: Props) {
   return (
     <main className="max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
       <aside className="hidden lg:block">
-        <PostSidebar
-          headings={headings}
-          shareUrl={shareUrl}
-          title={frontmatter.title}
-        />
+        <PostSidebar headings={headings} shareUrl={shareUrl} title={frontmatter.title} />
       </aside>
 
       <article className="prose prose-lg max-w-none flex-grow dark:prose-invert">
