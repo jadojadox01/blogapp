@@ -15,14 +15,6 @@ import type { Heading as MdastHeading, Literal } from 'mdast';
 
 import PostSidebar from '@/components/PostSidebar';
 
-// ✅ Interface used by Next.js for dynamic route params
-interface BlogPostPageProps {
-  params: {
-    slug: string;
-  };
-}
-
-// ✅ Frontmatter interface for post metadata
 interface Frontmatter {
   title: string;
   date: string;
@@ -30,14 +22,12 @@ interface Frontmatter {
   coverImage: string;
 }
 
-// ✅ Heading structure for table of contents / sidebar
 interface Heading {
   id: string;
   text: string;
   level: number;
 }
 
-// ✅ Slugify headings to use as ID anchors
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -46,7 +36,6 @@ function slugify(text: string): string {
     .replace(/\s+/g, '-');
 }
 
-// ✅ Extract <h2> to <h4> headings from markdown content
 async function extractHeadings(markdown: string): Promise<Heading[]> {
   const headings: Heading[] = [];
 
@@ -69,24 +58,17 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
   return headings;
 }
 
-// ✅ Main Blog Post Page
-export default async function BlogPost({ params }: BlogPostPageProps) {
+export default async function BlogPost({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const filePath = path.join(process.cwd(), 'posts', `${slug}.md`);
 
-  // Return 404 if markdown file doesn't exist
   if (!fs.existsSync(filePath)) {
     notFound();
   }
 
-  // Read and parse the markdown file
   const fileContent = fs.readFileSync(filePath, 'utf-8');
-  const { data: frontmatter, content } = matter(fileContent) as unknown as {
-    data: Frontmatter;
-    content: string;
-  };
+  const { data: frontmatter, content } = matter(fileContent) as unknown as { data: Frontmatter; content: string };
 
-  // Validate required frontmatter fields
   const requiredFields: (keyof Frontmatter)[] = ['title', 'date', 'coverImage', 'description'];
   for (const field of requiredFields) {
     if (!frontmatter[field]) {
@@ -94,10 +76,8 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
     }
   }
 
-  // Extract headings for sidebar
   const headings = await extractHeadings(content);
 
-  // Convert markdown content to HTML
   const processedContent = await remark()
     .use(remarkParse)
     .use(remarkRehype, { allowDangerousHtml: true })
@@ -110,12 +90,10 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
-      {/* Sidebar (client component) */}
       <aside className="hidden lg:block">
         <PostSidebar headings={headings} shareUrl={shareUrl} title={frontmatter.title} />
       </aside>
 
-      {/* Main article content */}
       <article className="prose prose-lg max-w-none flex-grow dark:prose-invert">
         <h1 className="mb-2">{frontmatter.title}</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{frontmatter.date}</p>
@@ -127,7 +105,6 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
           className="rounded-xl mb-8 w-full max-h-96 object-cover"
         />
 
-        {/* Render the processed markdown as HTML */}
         <section
           dangerouslySetInnerHTML={{ __html: contentHtml }}
           className="max-w-none"
