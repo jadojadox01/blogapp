@@ -1,4 +1,4 @@
-// This is a SERVER COMPONENT. DO NOT add "use client"
+// app/blog/[slug]/page.tsx
 
 import fs from 'fs';
 import path from 'path';
@@ -58,7 +58,12 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
   return headings;
 }
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
+// ✅ DO NOT use PageProps or other custom generic types
+export default async function BlogPost({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
   const filePath = path.join(process.cwd(), 'posts', `${slug}.md`);
 
@@ -67,9 +72,17 @@ export default async function BlogPost({ params }: { params: { slug: string } })
   }
 
   const fileContent = fs.readFileSync(filePath, 'utf-8');
-  const { data: frontmatter, content } = matter(fileContent) as unknown as { data: Frontmatter; content: string };
+  const { data: frontmatter, content } = matter(fileContent) as unknown as {
+    data: Frontmatter;
+    content: string;
+  };
 
-  const requiredFields: (keyof Frontmatter)[] = ['title', 'date', 'coverImage', 'description'];
+  const requiredFields: (keyof Frontmatter)[] = [
+    'title',
+    'date',
+    'coverImage',
+    'description',
+  ];
   for (const field of requiredFields) {
     if (!frontmatter[field]) {
       throw new Error(`Missing frontmatter field: ${field}`);
@@ -91,12 +104,18 @@ export default async function BlogPost({ params }: { params: { slug: string } })
   return (
     <main className="max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
       <aside className="hidden lg:block">
-        <PostSidebar headings={headings} shareUrl={shareUrl} title={frontmatter.title} />
+        <PostSidebar
+          headings={headings}
+          shareUrl={shareUrl}
+          title={frontmatter.title}
+        />
       </aside>
 
       <article className="prose prose-lg max-w-none flex-grow dark:prose-invert">
         <h1 className="mb-2">{frontmatter.title}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{frontmatter.date}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          {frontmatter.date}
+        </p>
         <Image
           src={frontmatter.coverImage}
           alt={frontmatter.title}
