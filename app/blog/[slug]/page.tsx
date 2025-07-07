@@ -15,6 +15,13 @@ import type { Heading as MdastHeading, Literal } from 'mdast';
 
 import PostSidebar from '@/components/PostSidebar';
 
+// Import RouteParams type for typed routes
+import type { RouteParams } from 'next';
+
+type Props = {
+  params: RouteParams<'blog/[slug]'>;
+};
+
 interface Frontmatter {
   title: string;
   date: string;
@@ -45,7 +52,9 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
       visit(tree, 'heading', (node: MdastHeading) => {
         if (node.depth >= 2 && node.depth <= 4) {
           const text = (node.children as Literal[])
-            .filter((child) => child.type === 'text' || child.type === 'inlineCode')
+            .filter(
+              (child) => child.type === 'text' || child.type === 'inlineCode'
+            )
             .map((child) => child.value)
             .join('');
           const id = slugify(text);
@@ -58,6 +67,7 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
   return headings;
 }
 
+// Generate static params for SSG with typedRoutes
 export async function generateStaticParams() {
   const postsDir = path.join(process.cwd(), 'posts');
   const files = fs.readdirSync(postsDir);
@@ -67,12 +77,7 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ This signature is safe & correct without PageProps constraint
-export default async function BlogPost({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function BlogPost({ params }: Props) {
   const { slug } = params;
   const filePath = path.join(process.cwd(), 'posts', `${slug}.md`);
 
@@ -86,6 +91,7 @@ export default async function BlogPost({
     content: string;
   };
 
+  // Validate frontmatter fields
   const requiredFields: (keyof Frontmatter)[] = [
     'title',
     'date',
