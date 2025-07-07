@@ -1,5 +1,3 @@
-// app/blog/[slug]/page.tsx
-
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -14,6 +12,13 @@ import { visit } from 'unist-util-visit';
 import type { Heading as MdastHeading, Literal } from 'mdast';
 
 import PostSidebar from '@/components/PostSidebar';
+
+// ✅ This is how you type Next.js dynamic route params
+type Props = {
+  params: {
+    slug: string;
+  };
+};
 
 interface Frontmatter {
   title: string;
@@ -58,11 +63,7 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
   return headings;
 }
 
-export default async function BlogPost({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function BlogPost({ params }: Props) {
   const { slug } = params;
   const filePath = path.join(process.cwd(), 'posts', `${slug}.md`);
 
