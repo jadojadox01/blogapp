@@ -1,3 +1,5 @@
+// app/blog/[slug]/page.tsx
+
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -12,12 +14,6 @@ import { visit } from 'unist-util-visit';
 import type { Heading as MdastHeading, Literal } from 'mdast';
 
 import PostSidebar from '@/components/PostSidebar';
-
-type Props = {
-  params: {
-    slug: string;
-  };
-};
 
 interface Frontmatter {
   title: string;
@@ -62,7 +58,21 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
   return headings;
 }
 
-export default async function BlogPost({ params }: Props) {
+export async function generateStaticParams() {
+  const postsDir = path.join(process.cwd(), 'posts');
+  const files = fs.readdirSync(postsDir);
+
+  return files.map((filename) => ({
+    slug: filename.replace(/\.md$/, ''),
+  }));
+}
+
+// ✅ This signature is safe & correct without PageProps constraint
+export default async function BlogPost({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
   const filePath = path.join(process.cwd(), 'posts', `${slug}.md`);
 
@@ -76,7 +86,12 @@ export default async function BlogPost({ params }: Props) {
     content: string;
   };
 
-  const requiredFields: (keyof Frontmatter)[] = ['title', 'date', 'coverImage', 'description'];
+  const requiredFields: (keyof Frontmatter)[] = [
+    'title',
+    'date',
+    'coverImage',
+    'description',
+  ];
   for (const field of requiredFields) {
     if (!frontmatter[field]) {
       throw new Error(`Missing frontmatter field: ${field}`);
@@ -98,12 +113,18 @@ export default async function BlogPost({ params }: Props) {
   return (
     <main className="max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
       <aside className="hidden lg:block">
-        <PostSidebar headings={headings} shareUrl={shareUrl} title={frontmatter.title} />
+        <PostSidebar
+          headings={headings}
+          shareUrl={shareUrl}
+          title={frontmatter.title}
+        />
       </aside>
 
       <article className="prose prose-lg max-w-none flex-grow dark:prose-invert">
         <h1 className="mb-2">{frontmatter.title}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{frontmatter.date}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          {frontmatter.date}
+        </p>
         <Image
           src={frontmatter.coverImage}
           alt={frontmatter.title}
@@ -111,7 +132,6 @@ export default async function BlogPost({ params }: Props) {
           height={600}
           className="rounded-xl mb-8 w-full max-h-96 object-cover"
         />
-
         <section
           dangerouslySetInnerHTML={{ __html: contentHtml }}
           className="max-w-none"
