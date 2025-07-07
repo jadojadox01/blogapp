@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 
 interface Frontmatter {
+  category: any;
   title: string;
   date: string;
   description: string;

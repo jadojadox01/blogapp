@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { getPosts } from '@/lib/getPosts';
 
 interface Params {
@@ -7,6 +8,7 @@ interface Params {
 
 export default async function CategoryPostsPage({ params }: { params: Params }) {
   const { category } = params;
+
   const posts = await getPosts();
 
   // Filter posts by category (case insensitive)
@@ -18,9 +20,12 @@ export default async function CategoryPostsPage({ params }: { params: Params }) 
     return (
       <main className="max-w-5xl mx-auto px-4 py-12 text-center">
         <h1 className="text-3xl font-bold mb-4 text-emerald-600 dark:text-emerald-400">
-          No posts found in "{category}"
+          No posts found in &quot;{category}&quot;
         </h1>
-        <Link href="/blog/categories" className="text-emerald-600 dark:text-emerald-400 hover:underline">
+        <Link
+          href="/blog/categories"
+          className="text-emerald-600 dark:text-emerald-400 hover:underline"
+        >
           Back to categories
         </Link>
       </main>
@@ -30,7 +35,7 @@ export default async function CategoryPostsPage({ params }: { params: Params }) 
   return (
     <main className="max-w-6xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-8 text-emerald-600 dark:text-emerald-400">
-        Posts in "{category}"
+        Posts in &quot;{category}&quot;
       </h1>
 
       <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -40,7 +45,7 @@ export default async function CategoryPostsPage({ params }: { params: Params }) 
             href={`/blog/${slug}`}
             className="group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition border dark:border-gray-700 bg-white dark:bg-gray-900"
           >
-            <img
+            <Image
               src={frontmatter.coverImage}
               alt={frontmatter.title}
               width={800}
