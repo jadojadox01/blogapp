@@ -9,20 +9,7 @@ import rehypeStringify from 'rehype-stringify';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { visit } from 'unist-util-visit';
-import type { Heading as MdastHeading, Literal } from 'mdast';
-
-// PostSidebar import remains as is
-import PostSidebar from '@/components/PostSidebar';
-
-// This type import fixes your PageProps mismatch with typedRoutes
-import type  PageProps  from 'next/types';
-
-interface Frontmatter {
-  title: string;
-  date: string;
-  description: string;
-  coverImage: string;
-}
+import type { Root, Heading as MdastHeading, Text, InlineCode } from 'mdast';
 
 interface Heading {
   id: string;
@@ -43,12 +30,13 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
 
   await remark()
     .use(remarkParse)
-    .use(() => (tree) => {
+    .use(() => (tree: Root) => {
       visit(tree, 'heading', (node: MdastHeading) => {
         if (node.depth >= 2 && node.depth <= 4) {
-          const text = (node.children as Literal[])
+          const text = node.children
             .filter(
-              (child) => child.type === 'text' || child.type === 'inlineCode'
+              (child): child is Text | InlineCode =>
+                child.type === 'text' || child.type === 'inlineCode'
             )
             .map((child) => child.value)
             .join('');
@@ -62,33 +50,39 @@ async function extractHeadings(markdown: string): Promise<Heading[]> {
   return headings;
 }
 
-// Correctly typing the props here with PageProps generic fixes the error
-export default async function BlogPost({
-  params,
-}: PageProps<{ slug: string }>) {
-  const { slug } = params;
-  const filePath = path.join(process.cwd(), 'posts', `${slug}.md`);
+export async function generateStaticParams() {
+  const postsDir = path.join(process.cwd(), 'posts');
+  const files = fs.readdirSync(postsDir);
 
+  return files.map((filename) => ({
+    slug: filename.replace(/\.md$/, ''),
+  }));
+}
+
+type BlogPostProps = {
+  params: {
+    slug: string;
+  };
+};
+
+export default async function BlogPost({ params }: BlogPostProps) {
+  const { slug } = await params;
+
+  const filePath = path.join(process.cwd(), 'posts', `${slug}.md`);
   if (!fs.existsSync(filePath)) {
     notFound();
   }
 
   const fileContent = fs.readFileSync(filePath, 'utf-8');
-  const { data: frontmatter, content } = matter(fileContent) as unknown as {
-    data: Frontmatter;
-    content: string;
-  };
+  const { data: frontmatter, content } = matter(fileContent);
 
-  const requiredFields: (keyof Frontmatter)[] = [
-    'title',
-    'date',
-    'coverImage',
-    'description',
-  ];
-  for (const field of requiredFields) {
-    if (!frontmatter[field]) {
-      throw new Error(`Missing frontmatter field: ${field}`);
-    }
+  if (
+    !frontmatter.title ||
+    !frontmatter.date ||
+    !frontmatter.coverImage ||
+    !frontmatter.description
+  ) {
+    throw new Error('Missing required frontmatter fields in markdown.');
   }
 
   const headings = await extractHeadings(content);
@@ -101,23 +95,33 @@ export default async function BlogPost({
     .process(content);
 
   const contentHtml = processedContent.toString();
-  const shareUrl = `https://yourdomain.com/blog/${slug}`;
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
-      <aside className="hidden lg:block">
-        <PostSidebar
-          headings={headings}
-          shareUrl={shareUrl}
-          title={frontmatter.title}
-        />
-      </aside>
+      {/* Table of Contents Sidebar */}
+      <nav
+        aria-label="Table of contents"
+        className="hidden lg:block sticky top-24 max-h-[calc(100vh-96px)] overflow-auto w-64 flex-shrink-0 border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-900"
+      >
+        <h2 className="text-lg font-semibold mb-4">Contents</h2>
+        <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+          {headings.map(({ id, text, level }) => (
+            <li
+              key={id}
+              className={`ml-${(level - 2) * 4} hover:text-blue-600 dark:hover:text-blue-400`}
+            >
+              <a href={`#${id}`} className="block truncate">
+                {text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
+      {/* Main Article */}
       <article className="prose prose-lg max-w-none flex-grow dark:prose-invert">
         <h1 className="mb-2">{frontmatter.title}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-          {frontmatter.date}
-        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{frontmatter.date}</p>
         <Image
           src={frontmatter.coverImage}
           alt={frontmatter.title}

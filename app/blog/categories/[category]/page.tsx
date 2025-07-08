@@ -1,23 +1,18 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { getPosts } from '@/lib/getPosts';
-import type PageProps  from 'next/types'; // Import PageProps for typedRoutes compatibility
 
 interface Params {
   category: string;
 }
 
-export default async function CategoryPostsPage({
-  params,
-}: PageProps<Params>) {
-  const { category } = params;
+export default async function CategoryPostsPage({ params }: { params: Promise<Params> }) {
+  const { category } = await params; // ✅ Await the params object here
 
   const posts = await getPosts();
 
-  // Filter posts by category (case insensitive)
   const filteredPosts = posts.filter(
-    (post) =>
-      post.frontmatter.category?.toLowerCase() === category.toLowerCase()
+    (post) => post.frontmatter.category?.toLowerCase() === category.toLowerCase()
   );
 
   if (filteredPosts.length === 0) {
@@ -26,10 +21,7 @@ export default async function CategoryPostsPage({
         <h1 className="text-3xl font-bold mb-4 text-emerald-600 dark:text-emerald-400">
           No posts found in &quot;{category}&quot;
         </h1>
-        <Link
-          href="/blog/categories"
-          className="text-emerald-600 dark:text-emerald-400 hover:underline"
-        >
+        <Link href="/blog/categories" className="text-emerald-600 dark:text-emerald-400 hover:underline">
           Back to categories
         </Link>
       </main>
