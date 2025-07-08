@@ -14,6 +14,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         
         {/* Header Navigation */}
         <header className="bg-emerald-600 dark:bg-emerald-700 shadow-lg">
+        <link rel="icon" href="/icon.svg" />
           <nav className="max-w-6xl mx-auto flex flex-wrap items-center justify-between px-4 py-4 gap-10 py-6">
             {/* Logo */}
             <Link
