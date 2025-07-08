@@ -66,7 +66,7 @@ type BlogPostProps = {
 };
 
 export default async function BlogPost({ params }: BlogPostProps) {
-  const { slug } = await params;
+  const { slug } = params;
 
   const filePath = path.join(process.cwd(), 'posts', `${slug}.md`);
   if (!fs.existsSync(filePath)) {
