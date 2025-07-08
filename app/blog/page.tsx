@@ -7,10 +7,16 @@ interface SearchParams {
   page?: string;
 }
 
-export default async function BlogIndexPage({ searchParams }: { searchParams: SearchParams }) {
+export default async function BlogIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const resolvedSearchParams = await searchParams;
+
   const posts = await getPosts();
 
-  const page = parseInt(searchParams.page || '1');
+  const page = parseInt(resolvedSearchParams.page || '1');
   const postsPerPage = 6;
   const totalPages = Math.ceil(posts.length / postsPerPage);
 
@@ -34,11 +40,7 @@ export default async function BlogIndexPage({ searchParams }: { searchParams: Se
       {/* Blog Grid */}
       <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-12">
         {paginatedPosts.map(({ slug, frontmatter }) => (
-          <Link
-            key={slug}
-            href={`/blog/${slug}`}
-            className="group"
-          >
+          <Link key={slug} href={`/blog/${slug}`} className="group">
             <div className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all border dark:border-gray-700 bg-white dark:bg-gray-900">
               <Image
                 src={frontmatter.coverImage}
