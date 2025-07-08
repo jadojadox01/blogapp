@@ -2,21 +2,20 @@ import { getPosts } from '@/lib/getPosts';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// For demo, trending posts = latest 3 posts (you can customize)
-export default function HomePage() {
-  const posts = getPosts();
+export default async function HomePage() {
+  const posts = await getPosts(); // await here!
 
-  const trendingPosts = posts.slice(0, 3); // first 3 as trending
-  const otherPosts = posts.slice(3); // rest of the posts
+  const trendingPosts = posts.slice(0, 3);
+  const otherPosts = posts.slice(3);
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-12 space-y-16">
       {/* Hero / CTA Section */}
       <section className="text-center max-w-3xl mx-auto space-y-6">
-        <h1 className="text-5xl font-extrabold text-blue-700 dark:text-blue-300">
+        <h1 className="text-5xl font-extrabold" style={{ color: 'var(--foreground)' }}>
           Welcome to Jean’s Blog
         </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-300">
+        <p className="text-lg" style={{ color: 'var(--foreground)' }}>
           Discover insightful articles on technology, programming, and more.
         </p>
         <Link
@@ -29,32 +28,30 @@ export default function HomePage() {
 
       {/* Quick Links */}
       <section className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-        <Link
-          href="/about"
-          className="p-6 border rounded-lg hover:shadow-lg transition bg-white dark:bg-gray-900 dark:border-gray-700"
-        >
-          <h2 className="text-xl font-semibold mb-2">About Me</h2>
-          <p className="text-gray-600 dark:text-gray-400">Learn about Jean&apos;s journey.</p>
-        </Link>
-        <Link
-          href="/blog/categories"
-          className="p-6 border rounded-lg hover:shadow-lg transition bg-white dark:bg-gray-900 dark:border-gray-700"
-        >
-          <h2 className="text-xl font-semibold mb-2">Categories</h2>
-          <p className="text-gray-600 dark:text-gray-400">Browse posts by topics.</p>
-        </Link>
-        <Link
-          href="/contact"
-          className="p-6 border rounded-lg hover:shadow-lg transition bg-white dark:bg-gray-900 dark:border-gray-700"
-        >
-          <h2 className="text-xl font-semibold mb-2">Contact</h2>
-          <p className="text-gray-600 dark:text-gray-400">Get in touch with me.</p>
-        </Link>
+        {[
+          { href: '/about', title: 'About Me', desc: 'Learn about Jean’s journey.' },
+          { href: '/blog/categories', title: 'Categories', desc: 'Browse posts by topics.' },
+          { href: '/contact', title: 'Contact', desc: 'Get in touch with me.' },
+        ].map(({ href, title, desc }) => (
+          <Link
+            key={href}
+            href={href}
+            className="p-6 border rounded-lg hover:shadow-lg transition"
+            style={{
+              background: 'var(--background)',
+              color: 'var(--foreground)',
+              borderColor: 'rgba(0,0,0,0.1)',
+            }}
+          >
+            <h2 className="text-xl font-semibold mb-2">{title}</h2>
+            <p>{desc}</p>
+          </Link>
+        ))}
       </section>
 
       {/* Trending Posts */}
       <section>
-        <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white text-center">
+        <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: 'var(--foreground)' }}>
           🔥 Trending Posts
         </h2>
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-3">
@@ -62,7 +59,12 @@ export default function HomePage() {
             <Link
               key={slug}
               href={`/blog/${slug}`}
-              className="group block rounded-xl overflow-hidden shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 transition-transform hover:-translate-y-1 hover:shadow-2xl"
+              className="group block rounded-xl overflow-hidden shadow-lg border transition-transform hover:-translate-y-1 hover:shadow-2xl"
+              style={{
+                background: 'var(--background)',
+                color: 'var(--foreground)',
+                borderColor: 'rgba(0,0,0,0.1)',
+              }}
             >
               <div className="relative h-48 w-full">
                 <Image
@@ -74,24 +76,16 @@ export default function HomePage() {
                   priority={true}
                 />
               </div>
-
               <div className="p-5">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
-                  {frontmatter.title}
-                </h3>
-                <time
-                  dateTime={frontmatter.date}
-                  className="block text-xs text-gray-500 dark:text-gray-400 mb-3"
-                >
+                <h3 className="text-xl font-semibold mb-2 line-clamp-2">{frontmatter.title}</h3>
+                <time dateTime={frontmatter.date} className="block text-xs mb-3">
                   {new Date(frontmatter.date).toLocaleDateString(undefined, {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric',
                   })}
                 </time>
-                <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-3">
-                  {frontmatter.description}
-                </p>
+                <p className="text-sm line-clamp-3">{frontmatter.description}</p>
               </div>
             </Link>
           ))}
@@ -100,7 +94,7 @@ export default function HomePage() {
 
       {/* All Other Posts */}
       <section>
-        <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white text-center">
+        <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: 'var(--foreground)' }}>
           Latest Posts
         </h2>
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -108,7 +102,12 @@ export default function HomePage() {
             <Link
               key={slug}
               href={`/blog/${slug}`}
-              className="group block rounded-xl overflow-hidden shadow hover:shadow-lg transition border dark:border-gray-700 bg-white dark:bg-gray-900"
+              className="group block rounded-xl overflow-hidden shadow border hover:shadow-lg transition"
+              style={{
+                background: 'var(--background)',
+                color: 'var(--foreground)',
+                borderColor: 'rgba(0,0,0,0.1)',
+              }}
             >
               <div className="relative h-48 w-full">
                 <Image
@@ -120,22 +119,15 @@ export default function HomePage() {
                 />
               </div>
               <div className="p-4">
-                <h3 className="text-lg font-semibold dark:text-white line-clamp-2">
-                  {frontmatter.title}
-                </h3>
-                <time
-                  dateTime={frontmatter.date}
-                  className="block text-xs text-gray-500 dark:text-gray-400 mb-2"
-                >
+                <h3 className="text-lg font-semibold line-clamp-2">{frontmatter.title}</h3>
+                <time dateTime={frontmatter.date} className="block text-xs mb-2">
                   {new Date(frontmatter.date).toLocaleDateString(undefined, {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric',
                   })}
                 </time>
-                <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-3">
-                  {frontmatter.description}
-                </p>
+                <p className="text-sm line-clamp-3">{frontmatter.description}</p>
               </div>
             </Link>
           ))}

@@ -28,7 +28,7 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16">
+    <main className="max-w-3xl mx-auto px-6 py-16 min-h-screen font-montserrat">
       <h1 className="text-4xl font-bold mb-8 text-emerald-600 dark:text-emerald-400">Contact Us</h1>
       <p className="mb-10 text-gray-700 dark:text-gray-300">
         Have questions, feedback, or want to get in touch? Fill out the form below, and we’ll respond as soon as possible.

@@ -26,7 +26,7 @@ export default async function BlogIndexPage({
   const paginatedPosts = posts.slice(start, start + postsPerPage);
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-16">
+    <main className="max-w-7xl mx-auto px-4 py-16 min-h-screen font-montserrat">
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">

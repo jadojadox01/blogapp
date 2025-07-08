@@ -95,7 +95,7 @@ export default async function BlogPost({
   const contentHtml = processedContent.toString();
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
+    <main className="min-h-screen font-montserrat max-w-7xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-10">
       <nav
         aria-label="Table of contents"
         className="hidden lg:block sticky top-24 max-h-[calc(100vh-96px)] overflow-auto w-64 flex-shrink-0 border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-900"

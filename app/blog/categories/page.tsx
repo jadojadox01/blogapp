@@ -10,7 +10,7 @@ export default async function CategoriesPage() {
   ).sort();
 
   return (
-    <main className="max-w-5xl mx-auto px-4 py-12">
+    <main className="max-w-5xl mx-auto px-4 py-12 min-h-screen font-montserrat">
       <h1 className="text-4xl font-bold mb-8 text-emerald-600 dark:text-emerald-400">
         Blog Categories
       </h1>

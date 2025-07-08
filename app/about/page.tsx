@@ -1,6 +1,6 @@
 export default function AboutPage() {
     return (
-      <main className="max-w-4xl mx-auto px-6 py-16 prose prose-lg dark:prose-invert">
+      <main className="min-h-screen font-montserrat max-w-4xl mx-auto px-6 py-16 prose prose-lg dark:prose-invert">
         <h1>About Us</h1>
         <p>
           Welcome to Jean’s Blog! This site is dedicated to sharing valuable

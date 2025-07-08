@@ -10,7 +10,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="font-montserrat bg-white dark:bg-gray-900 text-white min-h-screen flex flex-col">
+      <body className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-montserrat min-h-screen flex flex-col transition-colors duration-300">
         
         {/* Header Navigation */}
         <header className="bg-emerald-600 dark:bg-emerald-700 shadow-lg">
@@ -67,18 +67,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             © 2025 Jean’s Blog. All rights reserved.
           </p>
           <div className="flex flex-wrap justify-center items-center gap-4 text-sm">
-            <Link
-              href="/terms"
-              className="transition hover:underline hover:text-white"
-            >
-              Terms & Conditions
-            </Link>
-            <Link
-              href="/privacy-policy"
-              className="transition hover:underline hover:text-white"
-            >
-              Privacy Policy
-            </Link>
+          <Link
+  href="/terms"
+  className="text-gray-300 transition hover:underline hover:text-white"
+>
+  Terms & Conditions
+</Link>
+<Link
+  href="/privacy-policy"
+  className="text-gray-300 transition hover:underline hover:text-white"
+>
+  Privacy Policy
+</Link>
+
           </div>
         </footer>
         

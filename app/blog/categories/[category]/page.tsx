@@ -29,7 +29,7 @@ export default async function CategoryPostsPage({ params }: { params: Promise<Pa
   }
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-12">
+    <main className="min-h-screen font-montserrat max-w-6xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold mb-8 text-emerald-600 dark:text-emerald-400">
         Posts in &quot;{category}&quot;
       </h1>
