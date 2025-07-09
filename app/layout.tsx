@@ -21,7 +21,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               href="/"
               className="text-2xl font-extrabold tracking-tight transition transform hover:scale-105 hover:text-white"
             >
-              Jean’s Blog
+              SKILL NEST
             </Link>
 
             {/* Nav + Search */}
@@ -65,7 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Footer */}
         <footer className="bg-slate-900 border-t border-slate-700 text-center py-6 shadow-inner px-4">
           <p className="mb-2 text-gray-300 text-sm sm:text-base">
-            © 2025 Jean’s Blog. All rights reserved.
+            © 2025 SKILLNEST. All rights reserved.
           </p>
           <div className="flex flex-wrap justify-center items-center gap-4 text-sm">
           <Link

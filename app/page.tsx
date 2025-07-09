@@ -13,10 +13,10 @@ export default async function HomePage() {
       {/* Hero / CTA Section */}
       <section className="text-center max-w-3xl mx-auto space-y-6">
         <h1 className="text-5xl font-extrabold" style={{ color: 'var(--foreground)' }}>
-          Welcome to Jean’s Blog
+        Welcome to Skillnest
         </h1>
         <p className="text-lg" style={{ color: 'var(--foreground)' }}>
-          Discover insightful articles on technology, programming, and more.
+        Skillnest | Learn, Earn, Grow From Anywhere
         </p>
         <Link
           href="/blog"
@@ -29,9 +29,9 @@ export default async function HomePage() {
       {/* Quick Links */}
       <section className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
         {[
-          { href: '/about', title: 'About Me', desc: 'Learn about Jean’s journey.' },
+          { href: '/about', title: 'About Me', desc: 'About Skillnest' },
           { href: '/blog/categories', title: 'Categories', desc: 'Browse posts by topics.' },
-          { href: '/contact', title: 'Contact', desc: 'Get in touch with me.' },
+          { href: '/contact', title: 'Contact', desc: 'Get in touch with us.' },
         ].map(({ href, title, desc }) => (
           <Link
             key={href}

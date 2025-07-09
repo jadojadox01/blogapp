@@ -33,7 +33,7 @@ export default async function BlogIndexPage({
           Latest Blog Posts
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-lg">
-          Explore tutorials, stories & insights from Jean’s Blog
+          Explore tutorials, stories & insights from Skill Nest
         </p>
       </div>
 
