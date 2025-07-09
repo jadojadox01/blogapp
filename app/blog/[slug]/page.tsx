@@ -115,7 +115,7 @@ export default async function BlogPost({
         </ul>
       </nav>
 
-      <article className="prose prose-lg max-w-none flex-grow dark:prose-invert">
+      <article className="prose prose-lg prose-headings:font-bold max-w-none flex-grow dark:prose-invert">
         <h1 className="mb-2">{frontmatter.title}</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{frontmatter.date}</p>
         <Image

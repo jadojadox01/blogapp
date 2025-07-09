@@ -17,6 +17,7 @@ Like many of you, I wanted to break free from the 9-to-5 grind and build a **sus
 
 
 ## What This Blog Will Cover  
+
 📌 **Freelancing** – How to start, find clients, and scale  
 📌 **AI Tools** – Leveraging automation for side hustles  
 📌 **Online Income** – Blogging, affiliate marketing, and more  
